@@ -16,6 +16,7 @@ errors = []
 warnings = []
 success = []
 
+
 # 1. Verificar archivos necesarios
 print("\n📁 Verificando archivos necesarios...")
 required_files = {
@@ -63,7 +64,7 @@ for dir_name in required_dirs:
 # 3. Verificar app.py
 print("\n🔍 Verificando app.py...")
 try:
-	with open('app.py', 'r', encoding='utf-8') as f:
+	with open('app_x.py', 'r', encoding='utf-8') as f:
 		content = f.read()
 
 		# Verificar server = app.server
