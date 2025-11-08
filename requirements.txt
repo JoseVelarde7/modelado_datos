@@ -34,3 +34,10 @@ pytz==2024.1
 # 🎯 Extras opcionales (comentar si no se usan)
 # jupyter==1.0.0
 # ipywidgets==8.1.2
+
+# Web Server
+gunicorn==22.0.0
+werkzeug==3.0.3
+
+# Optional but recommended
+python-dotenv==1.0.1

@@ -18,7 +18,7 @@ from components.sidebar import create_sidebar
 from pages.home import create_home_content
 from pages.definicion_problema import create_definicion_content
 from pages.analisis_estadistico import create_analisis_content
-from pages.tecnica_analitica import create_tecnica_analitica_content
+from pages.tecnica_analitica import create_tecnica_content
 from data_loader import load_data
 
 # =============================================================================
@@ -150,7 +150,7 @@ def display_page(pathname):
 	elif pathname == '/analisis':
 		return create_analisis_content(df)
 	elif pathname == '/tecnica':
-		return create_tecnica_analitica_content(df)
+		return create_tecnica_content()
 	elif pathname == '/comparacion':
 		return create_placeholder_page('⚖️', 'Comparación de Modelos', 'Evaluación y comparación de técnicas competidoras')
 	elif pathname == '/optimizacion':

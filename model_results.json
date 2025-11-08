@@ -1,0 +1,352 @@
+{
+  "timestamp": "2025-11-08T10:16:31.420469",
+  "dataset_info": {
+    "total_records": 108468,
+    "train_size": 86774,
+    "test_size": 21694,
+    "num_features": 10,
+    "feature_names": [
+      "price",
+      "freight_value",
+      "payment_value",
+      "payment_installments",
+      "product_photos_qty",
+      "product_weight_kg",
+      "product_volume_cm3",
+      "delivery_time_days",
+      "delivery_delay_days",
+      "on_time_delivery"
+    ],
+    "target_classes": [
+      "Insatisfecho",
+      "Neutro",
+      "Satisfecho"
+    ]
+  },
+  "models": {
+    "Logistic Regression": {
+      "accuracy": 0.788098091638241,
+      "precision": 0.7031664393730891,
+      "recall": 0.788098091638241,
+      "f1_score": 0.7309292380481637,
+      "roc_auc": 0.6864090468625625,
+      "confusion_matrix": [
+        [
+          868,
+          0,
+          2327
+        ],
+        [
+          176,
+          0,
+          1653
+        ],
+        [
+          441,
+          0,
+          16229
+        ]
+      ],
+      "classification_report": {
+        "Insatisfecho": {
+          "precision": 0.5845117845117845,
+          "recall": 0.27167449139280125,
+          "f1-score": 0.37094017094017095,
+          "support": 3195.0
+        },
+        "Neutro": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1829.0
+        },
+        "Satisfecho": {
+          "precision": 0.8030580434459894,
+          "recall": 0.9735452909418116,
+          "f1-score": 0.8801214783481114,
+          "support": 16670.0
+        },
+        "accuracy": 0.788098091638241,
+        "macro avg": {
+          "precision": 0.46252327598592463,
+          "recall": 0.41507326077820433,
+          "f1-score": 0.41702054976276076,
+          "support": 21694.0
+        },
+        "weighted avg": {
+          "precision": 0.7031664393730891,
+          "recall": 0.788098091638241,
+          "f1-score": 0.7309292380481637,
+          "support": 21694.0
+        }
+      },
+      "feature_importance": {
+        "price": 0.26971582453589277,
+        "freight_value": 0.07303938449915019,
+        "payment_value": 0.34968241580918236,
+        "payment_installments": 0.060619749656917445,
+        "product_photos_qty": 0.03126127167043105,
+        "product_weight_kg": 0.0069209578841600795,
+        "product_volume_cm3": 0.014857595266146509,
+        "delivery_time_days": 0.19316702556197898,
+        "delivery_delay_days": 0.045932475808458745,
+        "on_time_delivery": 0.269325617439189
+      },
+      "cv_scores": [
+        0.7887640449438202,
+        0.7892826274848747,
+        0.7881878421204264,
+        0.7883030826851052,
+        0.7890976143828512
+      ],
+      "cv_mean": 0.7887270423234156,
+      "cv_std": 0.00042844984551393373,
+      "training_time": 0.567382,
+      "train_size": 86774,
+      "test_size": 21694
+    },
+    "Decision Tree": {
+      "accuracy": 0.7962109338987738,
+      "precision": 0.7499317986821384,
+      "recall": 0.7962109338987738,
+      "f1_score": 0.7425044872078314,
+      "roc_auc": 0.6913298586648613,
+      "confusion_matrix": [
+        [
+          929,
+          27,
+          2239
+        ],
+        [
+          120,
+          37,
+          1672
+        ],
+        [
+          325,
+          38,
+          16307
+        ]
+      ],
+      "classification_report": {
+        "Insatisfecho": {
+          "precision": 0.6761280931586608,
+          "recall": 0.29076682316118935,
+          "f1-score": 0.40665353469030424,
+          "support": 3195.0
+        },
+        "Neutro": {
+          "precision": 0.3627450980392157,
+          "recall": 0.020229633679606344,
+          "f1-score": 0.038322112894873125,
+          "support": 1829.0
+        },
+        "Satisfecho": {
+          "precision": 0.8065585122168365,
+          "recall": 0.9782243551289742,
+          "f1-score": 0.8841357623075254,
+          "support": 16670.0
+        },
+        "accuracy": 0.7962109338987738,
+        "macro avg": {
+          "precision": 0.6151439011382377,
+          "recall": 0.42974027065659,
+          "f1-score": 0.44303713663090094,
+          "support": 21694.0
+        },
+        "weighted avg": {
+          "precision": 0.7499317986821384,
+          "recall": 0.7962109338987738,
+          "f1-score": 0.7425044872078314,
+          "support": 21694.0
+        }
+      },
+      "feature_importance": {
+        "price": 0.1156097321681479,
+        "freight_value": 0.04613821905364277,
+        "payment_value": 0.11795664545412408,
+        "payment_installments": 0.011236130550502635,
+        "product_photos_qty": 0.007767121459210865,
+        "product_weight_kg": 0.029473917408323287,
+        "product_volume_cm3": 0.03118745405448453,
+        "delivery_time_days": 0.07561707200465238,
+        "delivery_delay_days": 0.5650137078469115,
+        "on_time_delivery": 0.0
+      },
+      "cv_scores": [
+        0.7921060213195045,
+        0.795793719389225,
+        0.7969461250360127,
+        0.7960818208009219,
+        0.7987783796242941
+      ],
+      "cv_mean": 0.7959412132339917,
+      "cv_std": 0.002182181605603573,
+      "training_time": 2.109562,
+      "train_size": 86774,
+      "test_size": 21694
+    },
+    "Random Forest": {
+      "accuracy": 0.8101318336867337,
+      "precision": 0.8197926828534419,
+      "recall": 0.8101318336867337,
+      "f1_score": 0.7583923802785426,
+      "roc_auc": 0.7404799592911434,
+      "confusion_matrix": [
+        [
+          1032,
+          1,
+          2162
+        ],
+        [
+          106,
+          71,
+          1652
+        ],
+        [
+          197,
+          1,
+          16472
+        ]
+      ],
+      "classification_report": {
+        "Insatisfecho": {
+          "precision": 0.7730337078651686,
+          "recall": 0.32300469483568073,
+          "f1-score": 0.4556291390728477,
+          "support": 3195.0
+        },
+        "Neutro": {
+          "precision": 0.9726027397260274,
+          "recall": 0.038819026790595956,
+          "f1-score": 0.07465825446898001,
+          "support": 1829.0
+        },
+        "Satisfecho": {
+          "precision": 0.8119885635413586,
+          "recall": 0.988122375524895,
+          "f1-score": 0.8914384673665982,
+          "support": 16670.0
+        },
+        "accuracy": 0.8101318336867337,
+        "macro avg": {
+          "precision": 0.852541670377518,
+          "recall": 0.44998203238372386,
+          "f1-score": 0.4739086203028086,
+          "support": 21694.0
+        },
+        "weighted avg": {
+          "precision": 0.8197926828534419,
+          "recall": 0.8101318336867337,
+          "f1-score": 0.7583923802785426,
+          "support": 21694.0
+        }
+      },
+      "feature_importance": {
+        "price": 0.11109651544133324,
+        "freight_value": 0.08496491750032838,
+        "payment_value": 0.11879900618720081,
+        "payment_installments": 0.03238373064338318,
+        "product_photos_qty": 0.026185272066980726,
+        "product_weight_kg": 0.06363306460369277,
+        "product_volume_cm3": 0.07096778234506725,
+        "delivery_time_days": 0.16240440464893516,
+        "delivery_delay_days": 0.23483125711550917,
+        "on_time_delivery": 0.09473404944756937
+      },
+      "cv_scores": [
+        0.8102564102564103,
+        0.8109478536444829,
+        0.8142898300201671,
+        0.8099683088447134,
+        0.8120894318312781
+      ],
+      "cv_mean": 0.8115103669194104,
+      "cv_std": 0.0015701912560904649,
+      "training_time": 67.96017,
+      "train_size": 86774,
+      "test_size": 21694
+    },
+    "Gradient Boosting": {
+      "accuracy": 0.8021572785101871,
+      "precision": 0.8004791226405753,
+      "recall": 0.8021572785101871,
+      "f1_score": 0.7459846760185712,
+      "roc_auc": 0.7174710143845306,
+      "confusion_matrix": [
+        [
+          938,
+          1,
+          2256
+        ],
+        [
+          122,
+          27,
+          1680
+        ],
+        [
+          230,
+          3,
+          16437
+        ]
+      ],
+      "classification_report": {
+        "Insatisfecho": {
+          "precision": 0.7271317829457364,
+          "recall": 0.29358372456964005,
+          "f1-score": 0.4182831661092531,
+          "support": 3195.0
+        },
+        "Neutro": {
+          "precision": 0.8709677419354839,
+          "recall": 0.014762165117550574,
+          "f1-score": 0.02903225806451613,
+          "support": 1829.0
+        },
+        "Satisfecho": {
+          "precision": 0.806803121778825,
+          "recall": 0.9860227954409119,
+          "f1-score": 0.8874551197257241,
+          "support": 16670.0
+        },
+        "accuracy": 0.8021572785101871,
+        "macro avg": {
+          "precision": 0.8016342155533485,
+          "recall": 0.43145622837603415,
+          "f1-score": 0.44492351463316443,
+          "support": 21694.0
+        },
+        "weighted avg": {
+          "precision": 0.8004791226405753,
+          "recall": 0.8021572785101871,
+          "f1-score": 0.7459846760185712,
+          "support": 21694.0
+        }
+      },
+      "feature_importance": {
+        "price": 0.12512064876228712,
+        "freight_value": 0.0473501482798951,
+        "payment_value": 0.13546561994677842,
+        "payment_installments": 0.010298749871869671,
+        "product_photos_qty": 0.005955134666932406,
+        "product_weight_kg": 0.02192661407293168,
+        "product_volume_cm3": 0.027032748315536686,
+        "delivery_time_days": 0.08316262768536148,
+        "delivery_delay_days": 0.5434585719874867,
+        "on_time_delivery": 0.00022913641092062517
+      },
+      "cv_scores": [
+        0.8031691155286661,
+        0.8046672428694901,
+        0.8048977239988476,
+        0.8031114952463267,
+        0.8042526218739195
+      ],
+      "cv_mean": 0.8040196399034499,
+      "cv_std": 0.0007473714349827837,
+      "training_time": 372.367013,
+      "train_size": 86774,
+      "test_size": 21694
+    }
+  }
+}

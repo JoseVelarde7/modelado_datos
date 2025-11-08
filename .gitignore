@@ -1,87 +1,56 @@
-# =====================================
-# 🐍 Proyecto Python + Dash + Plotly
-# =====================================
-
-# Entorno virtual
-venv/
-env/
-.env/
-.venv/
-ENV/
-
-# Archivos de configuración de entorno
-*.env
-*.env.*
-.env.bak
-
-# Archivos de caché de Python
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Archivos de compilación / distribución
+*.so
+.Python
+env/
+venv/
+ENV/
 build/
+develop-eggs/
 dist/
-*.egg-info/
+downloads/
+eggs/
 .eggs/
-pip-wheel-metadata/
-*.manifest
-*.spec
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Archivos temporales
-*.log
-*.tmp
-*.bak
+# IDEs
+.vscode/
+.idea/
 *.swp
-*.DS_Store
+*.swo
+*~
+
+# OS
+.DS_Store
 Thumbs.db
 
-# Archivos de Jupyter o IPython
-.ipynb_checkpoints/
-.profile
-.pyre/
-.pytype/
+# Jupyter Notebook
+.ipynb_checkpoints
 
-# Configuraciones locales
-*.vscode/
-.idea/
-.spyproject/
-*.sublime-project
-*.sublime-workspace
+# Environment
+.env
+.env.local
 
-# Archivos de Dash / Plotly
-# (Si generas archivos HTML estáticos o cachés de Dash)
-assets/.webassets-cache/
-*.html
-*.json
+# Logs
+*.log
+
+# Data (si son archivos muy grandes, coméntalos)
+# df_oficial.xlsx
+# detalle2
+
+# Modelos entrenados (opcional, son grandes)
 *.pkl
-*.db
 
-# Resultados de ejecución o exportaciones
-#data/
-#outputs/
-#results/
-#*.csv
-#*.xlsx
-#*.parquet
-
-# Dependencias descargadas
-__pypackages__/
-site/
-.wheelhouse/
-
-# Archivos de tests
-.coverage
-.tox/
-.nox/
-.pytest_cache/
-
-# Docker
-docker-compose.override.yml
-*.pid
-*.sock
-
-# Si usas Streamlit o Dash con cache
-.streamlit/
-.cache/
-dash_cache/
+# Temporal
+tmp/
+temp/
