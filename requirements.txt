@@ -1,0 +1,36 @@
+# ============================================================================
+# 📦 REQUIREMENTS - OLIST ANALYTICS DASHBOARD
+# Python 3.11+ Compatible
+# ============================================================================
+
+# 🎨 Framework Web y UI
+dash==2.17.1
+dash-bootstrap-components==1.6.0
+dash-core-components==2.0.0
+dash-html-components==2.0.0
+dash-table==5.0.0
+
+# 📊 Análisis de Datos
+pandas==2.2.0
+numpy==1.26.4
+scipy==1.12.0
+
+# 📈 Visualización
+plotly==5.19.0
+matplotlib==3.8.3
+seaborn==0.13.2
+
+# 🤖 Machine Learning
+scikit-learn==1.4.1.post1
+
+# 📑 Manejo de archivos Excel
+openpyxl==3.1.2
+xlrd==2.0.1
+
+# 🔧 Utilidades
+python-dateutil==2.9.0
+pytz==2024.1
+
+# 🎯 Extras opcionales (comentar si no se usan)
+# jupyter==1.0.0
+# ipywidgets==8.1.2
