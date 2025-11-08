@@ -1,242 +1,217 @@
+#!/usr/bin/env python3
 """
-=============================================================================
-APLICACIÓN PRINCIPAL - OLIST E-COMMERCE PROJECT
-=============================================================================
-Dashboard Dash con navegación multipágina y análisis de satisfacción del cliente.
+Script de Verificación Pre-Deploy
+Ejecuta esto antes de subir a Render para verificar que todo esté correcto
 """
 
+import os
 import sys
+from pathlib import Path
 
-sys.path.append('/home/claude/olist_project')
+print("=" * 70)
+print("🔍 VERIFICACIÓN PRE-DEPLOY PARA RENDER")
+print("=" * 70)
 
-from dash import Dash, html, dcc, Input, Output, callback
-import dash_bootstrap_components as dbc
+errors = []
+warnings = []
+success = []
 
-# Imports del proyecto
-from config import COLORS, CONTENT_STYLE
-from components.sidebar import create_sidebar
-from pages.home import create_home_content
-from pages.definicion_problema import create_definicion_content
-from pages.analisis_estadistico import create_analisis_content
-from pages.tecnica_analitica import create_tecnica_content
-from data_loader import load_data
+# 1. Verificar archivos necesarios
+print("\n📁 Verificando archivos necesarios...")
+required_files = {
+	'requirements.txt': 'Dependencias de Python',
+	'Procfile': 'Comando de inicio',
+	'app.py': 'Aplicación principal',
+	'config.py': 'Configuración',
+	'data_loader.py': 'Cargador de datos',
+	'model_results.json': 'Resultados de modelos'
+}
 
-# =============================================================================
-# ESTILOS CSS GLOBALES
-# =============================================================================
-
-EXTERNAL_STYLESHEETS = [
-	dbc.themes.BOOTSTRAP,
-	{
-		'href': 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-		'rel': 'stylesheet'
-	}
-]
-
-# CSS personalizado para toda la aplicación
-CUSTOM_CSS = f"""
-    body {{
-        background-color: {COLORS['background']} !important;
-        color: {COLORS['text']} !important;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-    }}
-
-    * {{
-        color: {COLORS['text']};
-    }}
-
-    p, span, div, li, td, th, label {{
-        color: {COLORS['text']} !important;
-    }}
-
-    h1, h2, h3, h4, h5, h6 {{
-        color: {COLORS['text']} !important;
-    }}
-
-    .card {{
-        background-color: {COLORS['card']} !important;
-        color: {COLORS['text']} !important;
-    }}
-
-    .card-body {{
-        color: {COLORS['text']} !important;
-    }}
-
-    .alert {{
-        color: {COLORS['text']} !important;
-    }}
-
-    a {{
-        text-decoration: none !important;
-    }}
-
-    strong {{
-        color: {COLORS['text']} !important;
-    }}
-
-    em {{
-        color: {COLORS['text']} !important;
-    }}
-"""
-
-# =============================================================================
-# INICIALIZACIÓN DE LA APP
-# =============================================================================
-
-app = Dash(
-	__name__,
-	external_stylesheets=EXTERNAL_STYLESHEETS,
-	suppress_callback_exceptions=True,
-	title='Olist E-commerce Analytics'
-)
-
-# Inyectar CSS personalizado
-app.index_string = f'''
-<!DOCTYPE html>
-<html>
-    <head>
-        {{%metas%}}
-        <title>{{%title%}}</title>
-        {{%favicon%}}
-        {{%css%}}
-        <style>
-            {CUSTOM_CSS}
-        </style>
-    </head>
-    <body>
-        {{%app_entry%}}
-        <footer>
-            {{%config%}}
-            {{%scripts%}}
-            {{%renderer%}}
-        </footer>
-    </body>
-</html>
-'''
-
-# Cargar datos una vez al inicio
-print("🚀 Inicializando aplicación...")
-df = load_data()
-print("✅ Datos cargados exitosamente\n")
-
-# =============================================================================
-# LAYOUT PRINCIPAL
-# =============================================================================
-
-app.layout = html.Div([
-	dcc.Location(id='url', refresh=False),
-	create_sidebar(),
-	html.Div(id='page-content', style=CONTENT_STYLE)
-], style={'background': COLORS['background']})
-
-
-# =============================================================================
-# CALLBACKS
-# =============================================================================
-
-@callback(
-	Output('page-content', 'children'),
-	Input('url', 'pathname')
-)
-def display_page(pathname):
-	"""
-    Callback principal de navegación.
-    """
-
-	print(f"📍 Navegando a: {pathname}")
-
-	if pathname == '/definicion':
-		return create_definicion_content()
-	elif pathname == '/analisis':
-		return create_analisis_content(df)
-	elif pathname == '/tecnica':
-		return create_tecnica_content()
-	elif pathname == '/comparacion':
-		return create_placeholder_page('⚖️', 'Comparación de Modelos', 'Evaluación y comparación de técnicas competidoras')
-	elif pathname == '/optimizacion':
-		return create_placeholder_page('🎯', 'Optimización', 'Refinamiento y mejora del modelo seleccionado')
+for file, description in required_files.items():
+	if os.path.exists(file):
+		success.append(f"✅ {file} - {description}")
 	else:
-		return create_home_content()
+		errors.append(f"❌ FALTA: {file} - {description}")
 
+optional_files = {
+	'runtime.txt': 'Versión de Python',
+	'render.yaml': 'Configuración de Render',
+	'.gitignore': 'Archivos a ignorar'
+}
 
-def create_placeholder_page(icon, title, description):
-	"""
-    Crea una página placeholder para secciones pendientes.
-    """
+for file, description in optional_files.items():
+	if os.path.exists(file):
+		success.append(f"✅ {file} - {description}")
+	else:
+		warnings.append(f"⚠️  OPCIONAL: {file} - {description}")
 
-	return html.Div([
-		html.Div([
-			html.H1([
-				html.Span(icon, style={'fontSize': '80px', 'marginRight': '20px'}),
-				title
-			], style={
-				'textAlign': 'center',
-				'color': COLORS['primary'],
-				'marginBottom': '20px'
-			}),
-			html.P(description, style={
-				'textAlign': 'center',
-				'color': COLORS['text_muted'],
-				'fontSize': '20px',
-				'marginBottom': '40px'
-			})
-		]),
-
-		dbc.Alert([
-			html.H4('🚧 Sección En Desarrollo', className='alert-heading', style={'color': COLORS['text']}),
-			html.P([
-				'Esta sección está pendiente de implementación. ',
-				'Por favor, vuelve más tarde o navega a otras secciones disponibles.'
-			], style={'marginBottom': '0', 'color': COLORS['text']})
-		], color='warning', style={'fontSize': '16px', 'maxWidth': '800px', 'margin': '0 auto'})
-	])
-
-
-@callback(
-	[Output(f'nav-{item["id"]}', 'style') for item in [
-		{'id': 'home'}, {'id': 'definicion'}, {'id': 'analisis'},
-		{'id': 'tecnica'}, {'id': 'comparacion'}, {'id': 'optimizacion'}
-	]],
-	Input('url', 'pathname')
-)
-def update_nav_styles(pathname):
-	"""
-    Actualiza los estilos de navegación según la página activa.
-    """
-
-	from config import NAV_ITEM_STYLE, NAV_ITEM_ACTIVE_STYLE
-
-	routes = {
-		'/': 0,
-		'/definicion': 1,
-		'/analisis': 2,
-		'/tecnica': 3,
-		'/comparacion': 4,
-		'/optimizacion': 5
-	}
-
-	active_index = routes.get(pathname, 0)
-
-	styles = []
-	for i in range(6):
-		if i == active_index:
-			styles.append(NAV_ITEM_ACTIVE_STYLE)
+# 2. Verificar estructura de carpetas
+print("\n📂 Verificando estructura de carpetas...")
+required_dirs = ['components', 'pages']
+for dir_name in required_dirs:
+	if os.path.isdir(dir_name):
+		success.append(f"✅ Carpeta: {dir_name}/")
+		# Verificar __init__.py
+		init_file = os.path.join(dir_name, '__init__.py')
+		if os.path.exists(init_file):
+			success.append(f"   ✅ {init_file}")
 		else:
-			styles.append(NAV_ITEM_STYLE)
+			warnings.append(f"   ⚠️  Falta: {init_file}")
+	else:
+		errors.append(f"❌ FALTA carpeta: {dir_name}/")
 
-	return styles
+# 3. Verificar app.py
+print("\n🔍 Verificando app.py...")
+try:
+	with open('app.py', 'r', encoding='utf-8') as f:
+		content = f.read()
 
+		# Verificar server = app.server
+		if 'server = app.server' in content:
+			success.append("✅ app.py tiene: server = app.server")
+		else:
+			errors.append("❌ CRÍTICO: app.py debe tener 'server = app.server'")
 
-# =============================================================================
-# EJECUTAR APLICACIÓN
-# =============================================================================
+		# Verificar puerto dinámico
+		if "os.environ.get('PORT'" in content or "os.getenv('PORT'" in content:
+			success.append("✅ app.py usa puerto dinámico (PORT)")
+		else:
+			warnings.append("⚠️  Recomienda usar: port = int(os.environ.get('PORT', 8050))")
 
-if __name__ == '__main__':
-	print("\n" + "=" * 60)
-	print("🚀 OLIST E-COMMERCE ANALYTICS DASHBOARD")
-	print("=" * 60)
-	print(f"📊 Dataset: {len(df):,} registros cargados")
-	print(f"🌐 Servidor: http://127.0.0.1:8050")
-	print("=" * 60 + "\n")
+		# Verificar host 0.0.0.0
+		if "host='0.0.0.0'" in content:
+			success.append("✅ app.py usa host='0.0.0.0'")
+		else:
+			warnings.append("⚠️  Recomienda usar: host='0.0.0.0'")
 
-	app.run_server(debug=True, host='0.0.0.0', port=8050)
+except FileNotFoundError:
+	errors.append("❌ CRÍTICO: No se encuentra app.py")
+except Exception as e:
+	errors.append(f"❌ Error leyendo app.py: {e}")
+
+# 4. Verificar requirements.txt
+print("\n📦 Verificando requirements.txt...")
+try:
+	with open('requirements.txt', 'r') as f:
+		requirements = f.read()
+
+		critical_packages = ['dash', 'plotly', 'pandas', 'gunicorn']
+		for package in critical_packages:
+			if package in requirements.lower():
+				success.append(f"✅ Dependencia: {package}")
+			else:
+				errors.append(f"❌ FALTA dependencia crítica: {package}")
+
+except FileNotFoundError:
+	errors.append("❌ CRÍTICO: No se encuentra requirements.txt")
+
+# 5. Verificar Procfile
+print("\n⚙️  Verificando Procfile...")
+try:
+	with open('Procfile', 'r') as f:
+		procfile = f.read()
+
+		if 'gunicorn' in procfile and 'app:server' in procfile:
+			success.append("✅ Procfile correcto: gunicorn app:server")
+		else:
+			errors.append("❌ Procfile debe contener: web: gunicorn app:server")
+
+except FileNotFoundError:
+	errors.append("❌ No se encuentra Procfile")
+
+# 6. Verificar tamaño de archivos
+print("\n📊 Verificando tamaño de archivos...")
+large_files = []
+for root, dirs, files in os.walk('.'):
+	# Ignorar carpetas ocultas y __pycache__
+	dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
+
+	for file in files:
+		if file.startswith('.'):
+			continue
+		filepath = os.path.join(root, file)
+		try:
+			size = os.path.getsize(filepath) / (1024 * 1024)  # MB
+			if size > 50:
+				large_files.append(f"⚠️  {filepath}: {size:.1f} MB")
+		except:
+			pass
+
+if large_files:
+	warnings.append("⚠️  Archivos grandes encontrados (>50MB):")
+	for lf in large_files:
+		warnings.append(f"   {lf}")
+	warnings.append("   Considera usar almacenamiento externo para archivos >100MB")
+
+# 7. Verificar imports
+print("\n🔌 Verificando imports...")
+try:
+	sys.path.insert(0, os.getcwd())
+
+	modules_to_test = [
+		'config',
+		'data_loader',
+		'components.sidebar',
+		'pages.home',
+		'pages.tecnica_analitica'
+	]
+
+	for module in modules_to_test:
+		try:
+			__import__(module)
+			success.append(f"✅ Import OK: {module}")
+		except Exception as e:
+			errors.append(f"❌ Error importando {module}: {str(e)[:50]}")
+
+except Exception as e:
+	errors.append(f"❌ Error verificando imports: {e}")
+
+# 8. Verificar model_results.json
+print("\n📊 Verificando model_results.json...")
+try:
+	import json
+
+	with open('model_results.json', 'r') as f:
+		data = json.load(f)
+		if 'models' in data and 'dataset_info' in data:
+			success.append(f"✅ model_results.json válido ({len(data['models'])} modelos)")
+		else:
+			errors.append("❌ model_results.json tiene formato incorrecto")
+except FileNotFoundError:
+	errors.append("❌ CRÍTICO: Falta model_results.json")
+except json.JSONDecodeError:
+	errors.append("❌ model_results.json no es JSON válido")
+except Exception as e:
+	errors.append(f"❌ Error con model_results.json: {e}")
+
+# RESUMEN
+print("\n" + "=" * 70)
+print("📋 RESUMEN DE VERIFICACIÓN")
+print("=" * 70)
+
+print(f"\n✅ ÉXITOS: {len(success)}")
+for s in success:
+	print(f"   {s}")
+
+if warnings:
+	print(f"\n⚠️  ADVERTENCIAS: {len(warnings)}")
+	for w in warnings:
+		print(f"   {w}")
+
+if errors:
+	print(f"\n❌ ERRORES CRÍTICOS: {len(errors)}")
+	for e in errors:
+		print(f"   {e}")
+	print("\n🚫 DEBES CORREGIR LOS ERRORES ANTES DE HACER DEPLOY")
+	sys.exit(1)
+else:
+	print("\n" + "=" * 70)
+	print("✅ ¡TODO LISTO PARA DEPLOY!")
+	print("=" * 70)
+	print("\n📝 Próximos pasos:")
+	print("   1. git add .")
+	print("   2. git commit -m 'Ready for deployment'")
+	print("   3. git push")
+	print("   4. Ir a render.com y conectar tu repo")
+	print("\n🎉 ¡Buena suerte con el deploy!")
+	sys.exit(0)
