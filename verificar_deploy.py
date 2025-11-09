@@ -1,161 +1,158 @@
+#!/usr/bin/env python3
 """
-Script de diagnóstico para problema de puerto en Render
-Ejecuta esto localmente para ver qué está mal
+Script de verificación pre-deployment para Railway
+Verifica que todos los archivos y configuraciones estén correctos
 """
 
 import os
 import sys
+import json
 
-print("=" * 70)
-print("🔍 DIAGNÓSTICO: app.py para Render")
-print("=" * 70)
 
-# 1. Verificar que app.py existe
-print("\n1️⃣ Verificando existencia de app.py...")
-if os.path.exists('app.py'):
-	print("   ✅ app.py existe")
-else:
-	print("   ❌ ERROR: app.py no existe")
-	sys.exit(1)
+def check_file_exists(filename, critical=True):
+	"""Verificar si un archivo existe"""
+	exists = os.path.isfile(filename)
+	status = "✅" if exists else ("❌" if critical else "⚠️")
+	print(f"{status} {filename}: {'Encontrado' if exists else 'NO ENCONTRADO'}")
+	return exists
 
-# 2. Leer contenido
-print("\n2️⃣ Leyendo app.py...")
-try:
-	with open('app.py', 'r', encoding='utf-8') as f:
+
+def check_app_structure(filename='app.py'):
+	"""Verificar estructura correcta de app.py"""
+	if not os.path.isfile(filename):
+		print(f"❌ {filename} no encontrado")
+		return False
+
+	with open(filename, 'r', encoding='utf-8') as f:
 		content = f.read()
-	print(f"   ✅ Archivo leído ({len(content)} caracteres)")
-except Exception as e:
-	print(f"   ❌ ERROR leyendo: {e}")
-	sys.exit(1)
 
-# 3. Verificar imports críticos
-print("\n3️⃣ Verificando imports...")
-required_imports = [
-	('from dash import Dash', 'Dash'),
-	('import dash', 'dash'),
-]
+	has_server = 'server = app.server' in content or 'server=app.server' in content
+	has_main = '__main__' in content
 
-has_dash = False
-for import_str, name in required_imports:
-	if import_str in content:
-		print(f"   ✅ {name} importado")
-		has_dash = True
-		break
+	print(f"\n📋 Verificando estructura de {filename}:")
+	print(f"  {'✅' if has_server else '❌'} Expone 'server' para Gunicorn: {has_server}")
+	print(f"  {'✅' if has_main else '⚠️'} Tiene bloque __main__: {has_main}")
 
-if not has_dash:
-	print("   ❌ ERROR: Dash no está importado")
-	sys.exit(1)
+	return has_server
 
-# 4. Verificar creación de app
-print("\n4️⃣ Verificando creación de app Dash...")
-if 'app = Dash(' in content or 'app=Dash(' in content:
-	print("   ✅ app = Dash() encontrado")
-else:
-	print("   ❌ ERROR: No se encuentra 'app = Dash()'")
-	print("   💡 Debe tener: app = Dash(__name__, ...)")
-	sys.exit(1)
 
-# 5. CRÍTICO: Verificar server = app.server
-print("\n5️⃣ VERIFICANDO CRÍTICO: server = app.server...")
-if 'server = app.server' in content or 'server=app.server' in content:
-	print("   ✅ server = app.server encontrado")
-else:
-	print("   ❌ ERROR CRÍTICO: Falta 'server = app.server'")
-	print("   💡 Esta línea es OBLIGATORIA para Gunicorn")
-	print("   💡 Agregar después de: app = Dash(...)")
-	print("\n   Debe verse así:")
-	print("   ─────────────────────────────────────")
-	print("   app = Dash(__name__, ...)")
-	print("   server = app.server  # ← AGREGAR ESTO")
-	print("   ─────────────────────────────────────")
-	sys.exit(1)
+def check_json_file(filename='model_results.json'):
+	"""Verificar que el archivo JSON sea válido"""
+	if not os.path.isfile(filename):
+		print(f"❌ {filename} no encontrado")
+		return False
 
-# 6. Verificar app.run_server con configuración correcta
-print("\n6️⃣ Verificando app.run_server...")
-if 'app.run_server(' in content or 'app.run(' in content:
-	print("   ✅ app.run_server() encontrado")
+	try:
+		with open(filename, 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		print(f"✅ {filename}: JSON válido ({len(data)} keys)")
+		return True
+	except json.JSONDecodeError as e:
+		print(f"❌ {filename}: JSON inválido - {e}")
+		return False
 
-	# Verificar puerto dinámico
-	if 'os.environ.get' in content and 'PORT' in content:
-		print("   ✅ Puerto dinámico configurado")
+
+def check_requirements(filename='requirements.txt'):
+	"""Verificar requirements.txt"""
+	if not os.path.isfile(filename):
+		print(f"❌ {filename} no encontrado")
+		return False
+
+	required_packages = ['dash', 'pandas', 'gunicorn', 'plotly', 'scikit-learn']
+
+	with open(filename, 'r') as f:
+		content = f.read().lower()
+
+	missing = [pkg for pkg in required_packages if pkg not in content]
+
+	if missing:
+		print(f"⚠️  Paquetes faltantes en requirements.txt: {', '.join(missing)}")
+		return False
+
+	print(f"✅ requirements.txt contiene todos los paquetes necesarios")
+	return True
+
+
+def check_git_status():
+	"""Verificar estado de Git"""
+	if not os.path.isdir('.git'):
+		print("⚠️  No es un repositorio Git. Ejecuta: git init")
+		return False
+
+	# Verificar si hay cambios sin commit
+	stream = os.popen('git status --porcelain')
+	output = stream.read()
+
+	if output.strip():
+		print("⚠️  Hay cambios sin commit:")
+		print(output)
+		print("   Ejecuta: git add . && git commit -m 'mensaje'")
+		return False
+
+	print("✅ Repositorio Git limpio (todos los cambios commiteados)")
+	return True
+
+
+def main():
+	print("=" * 60)
+	print("🔍 VERIFICACIÓN PRE-DEPLOYMENT PARA RAILWAY")
+	print("=" * 60)
+
+	print("\n📁 Verificando archivos críticos:")
+	critical_files = [
+		('app.py', True),
+		('requirements.txt', True),
+		('Dockerfile', True),
+		('.dockerignore', False),
+		('model_results.json', True),
+	]
+
+	all_critical_exist = True
+	for filename, critical in critical_files:
+		if not check_file_exists(filename, critical) and critical:
+			all_critical_exist = False
+
+	print("\n" + "=" * 60)
+
+	# Verificaciones adicionales
+	checks_passed = 0
+	total_checks = 4
+
+	if check_app_structure():
+		checks_passed += 1
+
+	print("\n" + "=" * 60)
+
+	if check_json_file():
+		checks_passed += 1
+
+	print("=" * 60)
+
+	if check_requirements():
+		checks_passed += 1
+
+	print("=" * 60)
+	print("\n📦 Verificando Git:")
+	if check_git_status():
+		checks_passed += 1
+
+	# Resultado final
+	print("\n" + "=" * 60)
+	print("📊 RESULTADO FINAL")
+	print("=" * 60)
+
+	if all_critical_exist and checks_passed == total_checks:
+		print("✅ ¡TODO LISTO PARA DEPLOYMENT!")
+		print("\n🚀 Próximos pasos:")
+		print("   1. git push origin main")
+		print("   2. Conectar repositorio en Railway")
+		print("   3. Railway detectará el Dockerfile automáticamente")
+		return 0
 	else:
-		print("   ⚠️  ADVERTENCIA: Puerto no es dinámico")
-		print("   💡 Debería tener: port = int(os.environ.get('PORT', 8050))")
+		print(f"⚠️  {total_checks - checks_passed} verificaciones fallidas")
+		print("\n🔧 Corrige los errores antes de deployar")
+		return 1
 
-	# Verificar host
-	if "host='0.0.0.0'" in content or 'host="0.0.0.0"' in content:
-		print("   ✅ host='0.0.0.0' configurado")
-	else:
-		print("   ⚠️  ADVERTENCIA: host no es 0.0.0.0")
-		print("   💡 Debería tener: host='0.0.0.0'")
-else:
-	print("   ℹ️  app.run_server() no encontrado (OK si usas solo Gunicorn)")
 
-# 7. Buscar errores comunes
-print("\n7️⃣ Buscando errores comunes...")
-issues = []
-
-if 'sys.path.append' in content and '/home/claude' in content:
-	issues.append("sys.path con ruta absoluta '/home/claude' (no funciona en Render)")
-
-if 'app.run_server(debug=True' in content:
-	issues.append("debug=True hardcoded (usar variable de entorno)")
-
-if issues:
-	for issue in issues:
-		print(f"   ⚠️  {issue}")
-else:
-	print("   ✅ No se encontraron errores comunes")
-
-# 8. Test de importación
-print("\n8️⃣ Intentando importar app.py...")
-try:
-	sys.path.insert(0, os.getcwd())
-	import app
-
-	print("   ✅ app.py se puede importar")
-
-	# Verificar que app existe
-	if hasattr(app, 'app'):
-		print("   ✅ Variable 'app' existe")
-	else:
-		print("   ❌ ERROR: Variable 'app' no existe")
-		sys.exit(1)
-
-	# Verificar que server existe
-	if hasattr(app, 'server'):
-		print("   ✅ Variable 'server' existe")
-	else:
-		print("   ❌ ERROR CRÍTICO: Variable 'server' no existe")
-		print("   💡 Agregar: server = app.server")
-		sys.exit(1)
-
-except ImportError as e:
-	print(f"   ❌ ERROR importando: {e}")
-	sys.exit(1)
-except Exception as e:
-	print(f"   ⚠️  Warning al importar: {e}")
-
-# 9. Resumen
-print("\n" + "=" * 70)
-print("📋 RESUMEN")
-print("=" * 70)
-
-print("\n✅ VERIFICACIONES PASADAS:")
-print("   • app.py existe")
-print("   • Dash importado correctamente")
-print("   • app = Dash() está presente")
-print("   • server = app.server está presente")
-print("   • app y server son importables")
-
-print("\n🎯 CONFIGURACIÓN PARA RENDER:")
-print("   Start Command debe ser:")
-print("   → gunicorn app:server --bind 0.0.0.0:$PORT")
-
-print("\n" + "=" * 70)
-print("✅ app.py ESTÁ LISTO PARA RENDER")
-print("=" * 70)
-print("\n💡 Si Render sigue sin detectar puerto, verifica:")
-print("   1. Start Command en Settings")
-print("   2. Que app.py esté en la raíz del repo en GitHub")
-print("   3. Los logs de Render para ver el error exacto")
+if __name__ == '__main__':
+	sys.exit(main())

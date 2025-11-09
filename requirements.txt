@@ -42,3 +42,6 @@ werkzeug==3.0.3
 
 # Optional but recommended
 python-dotenv==1.0.1
+
+# Utilities
+python-dateutil==2.9.0
