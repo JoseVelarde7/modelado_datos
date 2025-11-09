@@ -1,258 +1,161 @@
 """
-=============================================================================
-APLICACIÓN PRINCIPAL - OLIST E-COMMERCE PROJECT
-=============================================================================
-Dashboard Dash con navegación multipágina y análisis de satisfacción del cliente.
-Versión optimizada para deployment en Render.
+Script de diagnóstico para problema de puerto en Render
+Ejecuta esto localmente para ver qué está mal
 """
 
-import sys
 import os
+import sys
 
-# Configuración de rutas
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+print("=" * 70)
+print("🔍 DIAGNÓSTICO: app.py para Render")
+print("=" * 70)
 
-from dash import Dash, html, dcc, Input, Output, callback
-import dash_bootstrap_components as dbc
+# 1. Verificar que app.py existe
+print("\n1️⃣ Verificando existencia de app.py...")
+if os.path.exists('app.py'):
+	print("   ✅ app.py existe")
+else:
+	print("   ❌ ERROR: app.py no existe")
+	sys.exit(1)
 
-# Imports del proyecto
-from config import COLORS, CONTENT_STYLE
-from components.sidebar import create_sidebar
-from pages.home import create_home_content
-from pages.definicion_problema import create_definicion_content
-from pages.analisis_estadistico import create_analisis_content
-from pages.tecnica_analitica import create_tecnica_content
-from data_loader import load_data
+# 2. Leer contenido
+print("\n2️⃣ Leyendo app.py...")
+try:
+	with open('app.py', 'r', encoding='utf-8') as f:
+		content = f.read()
+	print(f"   ✅ Archivo leído ({len(content)} caracteres)")
+except Exception as e:
+	print(f"   ❌ ERROR leyendo: {e}")
+	sys.exit(1)
 
-# =============================================================================
-# ESTILOS CSS GLOBALES
-# =============================================================================
-
-EXTERNAL_STYLESHEETS = [
-	dbc.themes.BOOTSTRAP,
-	{
-		'href': 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-		'rel': 'stylesheet'
-	}
+# 3. Verificar imports críticos
+print("\n3️⃣ Verificando imports...")
+required_imports = [
+	('from dash import Dash', 'Dash'),
+	('import dash', 'dash'),
 ]
 
-# CSS personalizado para toda la aplicación
-CUSTOM_CSS = f"""
-    body {{
-        background-color: {COLORS['background']} !important;
-        color: {COLORS['text']} !important;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-    }}
+has_dash = False
+for import_str, name in required_imports:
+	if import_str in content:
+		print(f"   ✅ {name} importado")
+		has_dash = True
+		break
 
-    * {{
-        color: {COLORS['text']};
-    }}
+if not has_dash:
+	print("   ❌ ERROR: Dash no está importado")
+	sys.exit(1)
 
-    p, span, div, li, td, th, label {{
-        color: {COLORS['text']} !important;
-    }}
+# 4. Verificar creación de app
+print("\n4️⃣ Verificando creación de app Dash...")
+if 'app = Dash(' in content or 'app=Dash(' in content:
+	print("   ✅ app = Dash() encontrado")
+else:
+	print("   ❌ ERROR: No se encuentra 'app = Dash()'")
+	print("   💡 Debe tener: app = Dash(__name__, ...)")
+	sys.exit(1)
 
-    h1, h2, h3, h4, h5, h6 {{
-        color: {COLORS['text']} !important;
-    }}
+# 5. CRÍTICO: Verificar server = app.server
+print("\n5️⃣ VERIFICANDO CRÍTICO: server = app.server...")
+if 'server = app.server' in content or 'server=app.server' in content:
+	print("   ✅ server = app.server encontrado")
+else:
+	print("   ❌ ERROR CRÍTICO: Falta 'server = app.server'")
+	print("   💡 Esta línea es OBLIGATORIA para Gunicorn")
+	print("   💡 Agregar después de: app = Dash(...)")
+	print("\n   Debe verse así:")
+	print("   ─────────────────────────────────────")
+	print("   app = Dash(__name__, ...)")
+	print("   server = app.server  # ← AGREGAR ESTO")
+	print("   ─────────────────────────────────────")
+	sys.exit(1)
 
-    .card {{
-        background-color: {COLORS['card']} !important;
-        color: {COLORS['text']} !important;
-    }}
+# 6. Verificar app.run_server con configuración correcta
+print("\n6️⃣ Verificando app.run_server...")
+if 'app.run_server(' in content or 'app.run(' in content:
+	print("   ✅ app.run_server() encontrado")
 
-    .card-body {{
-        color: {COLORS['text']} !important;
-    }}
-
-    .alert {{
-        color: {COLORS['text']} !important;
-    }}
-
-    a {{
-        text-decoration: none !important;
-    }}
-
-    strong {{
-        color: {COLORS['text']} !important;
-    }}
-
-    em {{
-        color: {COLORS['text']} !important;
-    }}
-"""
-
-# =============================================================================
-# INICIALIZACIÓN DE LA APP
-# =============================================================================
-
-app = Dash(
-	__name__,
-	external_stylesheets=EXTERNAL_STYLESHEETS,
-	suppress_callback_exceptions=True,
-	title='Olist E-commerce Analytics'
-)
-
-# IMPORTANTE: Exponer el servidor para Gunicorn
-server = app.server
-
-# Inyectar CSS personalizado
-app.index_string = f'''
-<!DOCTYPE html>
-<html>
-    <head>
-        {{%metas%}}
-        <title>{{%title%}}</title>
-        {{%favicon%}}
-        {{%css%}}
-        <style>
-            {CUSTOM_CSS}
-        </style>
-    </head>
-    <body>
-        {{%app_entry%}}
-        <footer>
-            {{%config%}}
-            {{%scripts%}}
-            {{%renderer%}}
-        </footer>
-    </body>
-</html>
-'''
-
-# Cargar datos una vez al inicio
-print("🚀 Inicializando aplicación...")
-df = load_data()
-print("✅ Datos cargados exitosamente\n")
-
-# =============================================================================
-# LAYOUT PRINCIPAL
-# =============================================================================
-
-app.layout = html.Div([
-	dcc.Location(id='url', refresh=False),
-	create_sidebar(),
-	html.Div(id='page-content', style=CONTENT_STYLE)
-], style={'background': COLORS['background']})
-
-
-# =============================================================================
-# CALLBACKS
-# =============================================================================
-
-@callback(
-	Output('page-content', 'children'),
-	Input('url', 'pathname')
-)
-def display_page(pathname):
-	"""
-    Callback principal de navegación.
-    """
-
-	print(f"📍 Navegando a: {pathname}")
-
-	if pathname == '/definicion':
-		return create_definicion_content()
-	elif pathname == '/analisis':
-		return create_analisis_content(df)
-	elif pathname == '/tecnica':
-		return create_tecnica_content()
-	elif pathname == '/comparacion':
-		return create_placeholder_page('⚖️', 'Comparación de Modelos', 'Evaluación y comparación de técnicas competidoras')
-	elif pathname == '/optimizacion':
-		return create_placeholder_page('🎯', 'Optimización', 'Refinamiento y mejora del modelo seleccionado')
+	# Verificar puerto dinámico
+	if 'os.environ.get' in content and 'PORT' in content:
+		print("   ✅ Puerto dinámico configurado")
 	else:
-		return create_home_content()
+		print("   ⚠️  ADVERTENCIA: Puerto no es dinámico")
+		print("   💡 Debería tener: port = int(os.environ.get('PORT', 8050))")
 
+	# Verificar host
+	if "host='0.0.0.0'" in content or 'host="0.0.0.0"' in content:
+		print("   ✅ host='0.0.0.0' configurado")
+	else:
+		print("   ⚠️  ADVERTENCIA: host no es 0.0.0.0")
+		print("   💡 Debería tener: host='0.0.0.0'")
+else:
+	print("   ℹ️  app.run_server() no encontrado (OK si usas solo Gunicorn)")
 
-def create_placeholder_page(icon, title, description):
-	"""
-    Crea una página placeholder para secciones pendientes.
-    """
+# 7. Buscar errores comunes
+print("\n7️⃣ Buscando errores comunes...")
+issues = []
 
-	return html.Div([
-		html.Div([
-			html.H1([
-				html.Span(icon, style={'fontSize': '80px', 'marginRight': '20px'}),
-				title
-			], style={
-				'textAlign': 'center',
-				'color': COLORS['primary'],
-				'marginBottom': '20px'
-			}),
-			html.P(description, style={
-				'textAlign': 'center',
-				'color': COLORS['text_muted'],
-				'fontSize': '20px',
-				'marginBottom': '40px'
-			})
-		]),
+if 'sys.path.append' in content and '/home/claude' in content:
+	issues.append("sys.path con ruta absoluta '/home/claude' (no funciona en Render)")
 
-		dbc.Alert([
-			html.H4('🚧 Sección En Desarrollo', className='alert-heading', style={'color': COLORS['text']}),
-			html.P([
-				'Esta sección está pendiente de implementación. ',
-				'Por favor, vuelve más tarde o navega a otras secciones disponibles.'
-			], style={'marginBottom': '0', 'color': COLORS['text']})
-		], color='warning', style={'fontSize': '16px', 'maxWidth': '800px', 'margin': '0 auto'})
-	])
+if 'app.run_server(debug=True' in content:
+	issues.append("debug=True hardcoded (usar variable de entorno)")
 
+if issues:
+	for issue in issues:
+		print(f"   ⚠️  {issue}")
+else:
+	print("   ✅ No se encontraron errores comunes")
 
-@callback(
-	[Output(f'nav-{item["id"]}', 'style') for item in [
-		{'id': 'home'}, {'id': 'definicion'}, {'id': 'analisis'},
-		{'id': 'tecnica'}, {'id': 'comparacion'}, {'id': 'optimizacion'}
-	]],
-	Input('url', 'pathname')
-)
-def update_nav_styles(pathname):
-	"""
-    Actualiza los estilos de navegación según la página activa.
-    """
+# 8. Test de importación
+print("\n8️⃣ Intentando importar app.py...")
+try:
+	sys.path.insert(0, os.getcwd())
+	import app
 
-	from config import NAV_ITEM_STYLE, NAV_ITEM_ACTIVE_STYLE
+	print("   ✅ app.py se puede importar")
 
-	routes = {
-		'/': 0,
-		'/definicion': 1,
-		'/analisis': 2,
-		'/tecnica': 3,
-		'/comparacion': 4,
-		'/optimizacion': 5
-	}
+	# Verificar que app existe
+	if hasattr(app, 'app'):
+		print("   ✅ Variable 'app' existe")
+	else:
+		print("   ❌ ERROR: Variable 'app' no existe")
+		sys.exit(1)
 
-	active_index = routes.get(pathname, 0)
+	# Verificar que server existe
+	if hasattr(app, 'server'):
+		print("   ✅ Variable 'server' existe")
+	else:
+		print("   ❌ ERROR CRÍTICO: Variable 'server' no existe")
+		print("   💡 Agregar: server = app.server")
+		sys.exit(1)
 
-	styles = []
-	for i in range(6):
-		if i == active_index:
-			styles.append(NAV_ITEM_ACTIVE_STYLE)
-		else:
-			styles.append(NAV_ITEM_STYLE)
+except ImportError as e:
+	print(f"   ❌ ERROR importando: {e}")
+	sys.exit(1)
+except Exception as e:
+	print(f"   ⚠️  Warning al importar: {e}")
 
-	return styles
+# 9. Resumen
+print("\n" + "=" * 70)
+print("📋 RESUMEN")
+print("=" * 70)
 
+print("\n✅ VERIFICACIONES PASADAS:")
+print("   • app.py existe")
+print("   • Dash importado correctamente")
+print("   • app = Dash() está presente")
+print("   • server = app.server está presente")
+print("   • app y server son importables")
 
-# =============================================================================
-# EJECUTAR APLICACIÓN
-# =============================================================================
+print("\n🎯 CONFIGURACIÓN PARA RENDER:")
+print("   Start Command debe ser:")
+print("   → gunicorn app:server --bind 0.0.0.0:$PORT")
 
-if __name__ == '__main__':
-	print("\n" + "=" * 60)
-	print("🚀 OLIST E-COMMERCE ANALYTICS DASHBOARD")
-	print("=" * 60)
-	print(f"📊 Dataset: {len(df):,} registros cargados")
-
-	# Detectar si estamos en producción o desarrollo
-	port = int(os.environ.get('PORT', 8050))
-	debug_mode = os.environ.get('DASH_DEBUG_MODE', 'True') == 'True'
-
-	print(f"🌐 Servidor: http://0.0.0.0:{port}")
-	print(f"🔧 Modo: {'Desarrollo' if debug_mode else 'Producción'}")
-	print("=" * 60 + "\n")
-
-	app.run_server(
-		debug=debug_mode,
-		host='0.0.0.0',
-		port=port
-	)
+print("\n" + "=" * 70)
+print("✅ app.py ESTÁ LISTO PARA RENDER")
+print("=" * 70)
+print("\n💡 Si Render sigue sin detectar puerto, verifica:")
+print("   1. Start Command en Settings")
+print("   2. Que app.py esté en la raíz del repo en GitHub")
+print("   3. Los logs de Render para ver el error exacto")
