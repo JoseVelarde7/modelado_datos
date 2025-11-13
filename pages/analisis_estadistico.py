@@ -132,7 +132,7 @@ def create_correlation_section(df):
 	fig_heatmap, fig_bars, strong_pos, strong_neg, mod_pos, mod_neg = create_correlation_analysis(df)
 
 	return html.Div([
-		create_section_header('🔍 PASO 1: Identificación de Variables Predictoras', color=COLORS['primary']),
+		create_section_header('🔍 Identificación de Variables Predictoras', color=COLORS['primary']),
 
 		create_info_banner(
 			'Análisis de correlación de Pearson para identificar relaciones lineales entre variables y satisfacción del cliente',
@@ -2371,22 +2371,45 @@ def create_analisis_content(df):
 		),
 
 		# Banner introductorio
-		dbc.Alert([
-			html.H4('🎯 Marco Analítico', className='alert-heading', style={'color': COLORS['text']}),
-			html.P([
-				'Este análisis responde directamente a los ',
-				html.Strong('objetivos descriptivo, exploratorio e inferencial ', style={'color': COLORS['primary']}),
-				'del proyecto. Utilizamos métodos estadísticos rigurosos para: ',
-				html.Strong('(1) Caracterizar patrones de satisfacción, ', style={'color': COLORS['success']}),
-				html.Strong('(2) Identificar relaciones entre variables, ', style={'color': COLORS['info']}),
-				'y ',
-				html.Strong('(3) Validar hipótesis mediante pruebas estadísticas.', style={'color': COLORS['warning']})
-			], style={'marginBottom': '10px', 'color': COLORS['text']}),
-			html.P([
-				html.Strong('Metodología:', style={'color': COLORS['text']}),
-				' Análisis univariado → Análisis bivariado → Análisis multivariado → Pruebas de hipótesis'
-			], style={'marginBottom': 0, 'color': COLORS['text'], 'fontSize': '14px'})
-		], color='info', style={'marginBottom': '40px'}),
+		# dbc.Alert([
+		# 	html.H4('🎯 Marco Analítico', className='alert-heading', style={'color': COLORS['text']}),
+		# 	html.P([
+		# 		'Este análisis responde directamente a los ',
+		# 		html.Strong('objetivos descriptivo, exploratorio e inferencial ', style={'color': COLORS['primary']}),
+		# 		'del proyecto. Utilizamos métodos estadísticos rigurosos para: ',
+		# 		html.Strong('(1) Caracterizar patrones de satisfacción, ', style={'color': COLORS['success']}),
+		# 		html.Strong('(2) Identificar relaciones entre variables, ', style={'color': COLORS['info']}),
+		# 		'y ',
+		# 		html.Strong('(3) Validar hipótesis mediante pruebas estadísticas.', style={'color': COLORS['warning']})
+		# 	], style={'marginBottom': '10px', 'color': COLORS['text']}),
+		# 	html.P([
+		# 		html.Strong('Metodología:', style={'color': COLORS['text']}),
+		# 		' Análisis univariado → Análisis bivariado → Análisis multivariado → Pruebas de hipótesis'
+		# 	], style={'marginBottom': 0, 'color': COLORS['text'], 'fontSize': '14px'})
+		# ], color='info', style={'marginBottom': '40px'}),
+
+		dbc.Card([
+			dbc.CardHeader(
+				html.H5('🎯 Marco Analítico', style={'margin': 0, 'color': COLORS['info']})),
+			dbc.CardBody([
+				html.P([
+					'Este análisis responde directamente a los ',
+					html.Strong('objetivos descriptivo, exploratorio e inferencial ',
+								style={'color': COLORS['primary']}),
+					'del proyecto. Utilizamos métodos estadísticos rigurosos para: ',
+					html.Br(),
+					html.Strong('(1) Caracterizar patrones de satisfacción, ', style={'color': COLORS['success']}),
+					html.Br(),
+					html.Strong('(2) Identificar relaciones entre variables, ', style={'color': COLORS['info']}),
+					html.Br(),
+					html.Strong('(3) Validar hipótesis mediante pruebas estadísticas.', style={'color': COLORS['warning']})
+				], style={'marginBottom': '10px', 'color': COLORS['text']}),
+				# html.P([
+				# 	html.Strong('Metodología:', style={'color': COLORS['text']}),
+				# 	' Análisis univariado → Análisis bivariado → Análisis multivariado → Pruebas de hipótesis'
+				# ], style={'marginBottom': 0, 'color': COLORS['text'], 'fontSize': '14px'})
+			])
+		], style={'background': COLORS['card'], 'border': f'2px solid {COLORS["info"]}', 'marginBottom': '30px'}),
 
 		# SECCIÓN 1: Correlación
 		create_correlation_section(df),

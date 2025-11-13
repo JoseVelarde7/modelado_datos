@@ -31,11 +31,11 @@ def create_definicion_content():
         ),
 
         # Banner informativo
-        create_info_banner(
-            'Esta sección establece el marco conceptual y los objetivos que guían todo el análisis',
-            icon='💡',
-            banner_type='info'
-        ),
+        # create_info_banner(
+        #     'Esta sección establece el marco conceptual y los objetivos que guían todo el análisis',
+        #     icon='💡',
+        #     banner_type='info'
+        # ),
 
         # Pregunta de investigación
         create_section_header('❓ Pregunta de Investigación', color=COLORS['primary']),

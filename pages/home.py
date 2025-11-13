@@ -272,16 +272,16 @@ def create_home_content():
         ], style={'background': COLORS['card'], 'border': f'2px solid {COLORS["secondary"]}', 'marginBottom': '40px'}),
 
         # CTA
-        html.Div([
-            html.H4('🚀 Comienza la Exploración',
-                    style={'color': COLORS['primary'], 'textAlign': 'center', 'marginBottom': '20px'}),
-            html.P('Navega por las secciones para descubrir insights clave sobre satisfacción del cliente',
-                   style={'color': COLORS['text_muted'], 'textAlign': 'center', 'fontSize': '16px'})
-        ], style={
-            'padding': '40px',
-            'background': f'rgba(0, 212, 255, 0.05)',
-            'borderRadius': '12px',
-            'border': f'2px dashed {COLORS["primary"]}',
-            'marginTop': '40px'
-        })
+        # html.Div([
+        #     html.H4('🚀 Comienza la Exploración',
+        #             style={'color': COLORS['primary'], 'textAlign': 'center', 'marginBottom': '20px'}),
+        #     html.P('Navega por las secciones para descubrir insights clave sobre satisfacción del cliente',
+        #            style={'color': COLORS['text_muted'], 'textAlign': 'center', 'fontSize': '16px'})
+        # ], style={
+        #     'padding': '40px',
+        #     'background': f'rgba(0, 212, 255, 0.05)',
+        #     'borderRadius': '12px',
+        #     'border': f'2px dashed {COLORS["primary"]}',
+        #     'marginTop': '40px'
+        # })
     ])
