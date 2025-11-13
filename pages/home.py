@@ -26,7 +26,7 @@ def create_home_content():
         # Header principal
         create_page_header(
             title='Análisis E-commerce Olist',
-            subtitle='Predicción de Satisfacción del Cliente | Brasil 2016-2018',
+            subtitle='Análisis de Satisfacción del Cliente | Brasil 2016-2018',
             icon='🛒',
             show_divider=True
         ),
@@ -36,13 +36,13 @@ def create_home_content():
             dbc.Row([
                 dbc.Col([
                     html.Div([
-                        html.H2('📊 Proyecto de Analytics', style={
+                        html.H2('📊 Proyecto de Modelado de datos 1', style={
                             'color': COLORS['primary'],
                             'marginBottom': '20px',
                             'fontWeight': 'bold'
                         }),
                         html.P([
-                            'Análisis integral del comportamiento de clientes en el marketplace líder de Brasil. ',
+                            'Análisis integral del comportamiento de clientes en el marketplace Olist de Brasil. ',
                             html.Strong('110,013 transacciones'), ' analizadas durante el período ',
                             html.Strong('2016-2018'), ' para identificar ',
                             html.Strong('factores críticos de satisfacción del cliente.')
@@ -70,7 +70,7 @@ def create_home_content():
             dbc.CardBody([
                 html.P([
                     html.Strong('Olist ', style={'fontSize': '20px', 'color': COLORS['primary']}),
-                    'es la plataforma líder de ',
+                    'es la plataforma de ',
                     html.Strong('marketplace '),
                     'en Brasil que conecta pequeños y medianos comerciantes (PYMES) con clientes en todo el país. ',
                     'Funciona como un ',
@@ -102,7 +102,7 @@ def create_home_content():
                             html.H2('👥', style={'fontSize': '56px', 'margin': '0'}),
                             html.H5('PYMES',
                                     style={'color': COLORS['info'], 'marginTop': '10px', 'fontWeight': 'bold'}),
-                            html.P('Empoderando comercios locales',
+                            html.P('Pequeñas y medianas empresas',
                                    style={'color': COLORS['text_muted'], 'fontSize': '14px'})
                         ], style={'textAlign': 'center'})
                     ], width=3),
@@ -111,7 +111,7 @@ def create_home_content():
                             html.H2('📦', style={'fontSize': '56px', 'margin': '0'}),
                             html.H5('E-commerce',
                                     style={'color': COLORS['danger'], 'marginTop': '10px', 'fontWeight': 'bold'}),
-                            html.P('Experiencia digital completa',
+                            html.P('Comercio electrónico',
                                    style={'color': COLORS['text_muted'], 'fontSize': '14px'})
                         ], style={'textAlign': 'center'})
                     ], width=3)
