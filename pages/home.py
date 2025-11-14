@@ -141,7 +141,7 @@ def create_home_content():
                         html.Div([
                             html.H4('📱', style={'fontSize': '48px'}),
                             html.H5('Conectividad', style={'color': COLORS['primary']}),
-                            html.P('85%+ penetración de internet móvil', style={'color': COLORS['text_muted']})
+                            html.P('85%+ penetración de internet móvil (según ICT Households 2024)', style={'color': COLORS['text_muted']})
                         ], style={'textAlign': 'center', 'padding': '20px'})
                     ], width=3),
                     dbc.Col([
@@ -179,7 +179,7 @@ def create_home_content():
                         html.H3('🎯', style={'fontSize': '48px', 'textAlign': 'center', 'margin': '0'}),
                         html.H4('Retención de Clientes',
                                 style={'color': COLORS['primary'], 'textAlign': 'center', 'margin': '15px 0'}),
-                        html.P('Clientes satisfechos tienen 5x más probabilidad de volver a comprar',
+                        html.P('Clientes satisfechos tienen más probabilidad de volver a comprar',
                                style={'color': COLORS['text_muted'], 'textAlign': 'center', 'fontSize': '14px'})
                     ])
                 ], style={'background': COLORS['card'], 'border': f'2px solid {COLORS["primary"]}', 'height': '100%'})

@@ -134,11 +134,11 @@ def create_correlation_section(df):
 	return html.Div([
 		create_section_header('🔍 Identificación de Variables Predictoras', color=COLORS['primary']),
 
-		create_info_banner(
-			'Análisis de correlación de Pearson para identificar relaciones lineales entre variables y satisfacción del cliente',
-			icon='📌',
-			banner_type='info'
-		),
+		# create_info_banner(
+		# 	'Análisis de correlación de Pearson para identificar relaciones lineales entre variables y satisfacción del cliente',
+		# 	icon='📌',
+		# 	banner_type='info'
+		# ),
 
 		# Objetivo específico
 		dbc.Card([
@@ -148,11 +148,11 @@ def create_correlation_section(df):
 					html.Strong('"Identificar relaciones entre variables operacionales y niveles de satisfacción"',
 											style={'color': COLORS['text'], 'fontSize': '16px'}),
 				], style={'marginBottom': '10px', 'color': COLORS['text']}),
-				html.P([
-					'Este análisis responde: ',
-					html.Strong('¿Qué variables tienen mayor impacto en la satisfacción? ', style={'color': COLORS['primary']}),
-					'Utilizamos el coeficiente de correlación de Pearson (r) para medir la fuerza y dirección de relaciones lineales.'
-				], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text'], 'marginBottom': 0})
+				# html.P([
+				# 	'Este análisis responde: ',
+				# 	html.Strong('¿Qué variables tienen mayor impacto en la satisfacción? ', style={'color': COLORS['primary']}),
+				# 	'Utilizamos el coeficiente de correlación de Pearson (r) para medir la fuerza y dirección de relaciones lineales.'
+				# ], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text'], 'marginBottom': 0})
 			])
 		], style={'background': COLORS['card'], 'border': f'2px solid {COLORS["info"]}', 'marginBottom': '30px'}),
 
@@ -258,24 +258,24 @@ def create_correlation_section(df):
 				html.Hr(style={'borderColor': COLORS['border']}),
 
 				# Conclusión estratégica
-				html.Div([
-					html.H6('🎯 Conclusión Estratégica:', style={'color': COLORS['secondary'], 'marginBottom': '15px'}),
-					html.P([
-						'El análisis revela que ',
-						html.Strong('las variables operacionales de entrega ', style={'color': COLORS['primary']}),
-						'(delivery_delay_days, on_time_delivery) muestran las correlaciones más fuertes con la satisfacción. ',
-						'Esto indica que ',
-						html.Strong('la experiencia de entrega es el factor crítico ', style={'color': COLORS['success']}),
-						'que determina la satisfacción del cliente en Olist, superando incluso a variables transaccionales como precio. ',
-						html.Strong('Recomendación: Priorizar optimización logística sobre estrategias de precio.',
-												style={'color': COLORS['warning']})
-					], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text']})
-				], style={
-					'background': f'rgba(123, 44, 191, 0.1)',
-					'padding': '20px',
-					'borderRadius': '12px',
-					'border': f'1px solid {COLORS["secondary"]}'
-				})
+				# html.Div([
+				# 	html.H6('🎯 Conclusión Estratégica:', style={'color': COLORS['secondary'], 'marginBottom': '15px'}),
+				# 	html.P([
+				# 		'El análisis revela que ',
+				# 		html.Strong('las variables operacionales de entrega ', style={'color': COLORS['primary']}),
+				# 		'(delivery_delay_days, on_time_delivery) muestran las correlaciones más fuertes con la satisfacción. ',
+				# 		'Esto indica que ',
+				# 		html.Strong('la experiencia de entrega es el factor crítico ', style={'color': COLORS['success']}),
+				# 		'que determina la satisfacción del cliente en Olist, superando incluso a variables transaccionales como precio. ',
+				# 		html.Strong('Recomendación: Priorizar optimización logística sobre estrategias de precio.',
+				# 								style={'color': COLORS['warning']})
+				# 	], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text']})
+				# ], style={
+				# 	'background': f'rgba(123, 44, 191, 0.1)',
+				# 	'padding': '20px',
+				# 	'borderRadius': '12px',
+				# 	'border': f'1px solid {COLORS["secondary"]}'
+				# })
 			])
 		], style={'background': COLORS['card'], 'border': f'2px solid {COLORS["success"]}', 'marginBottom': '40px'})
 	])
@@ -326,9 +326,9 @@ def create_review_score_analysis(df):
 			'Distribución de Frecuencias',
 			'Distribución Acumulada',
 			'Box Plot con Outliers',
-			'Proporción por Rating',
-			'Q-Q Plot (Normalidad)',
-			'Violin Plot'
+			# 'Proporción por Rating',
+			# 'Q-Q Plot (Normalidad)',
+			# 'Violin Plot'
 		),
 		specs=[
 			[{"type": "bar"}, {"type": "scatter"}, {"type": "box"}],
@@ -383,62 +383,62 @@ def create_review_score_analysis(df):
 		row=1, col=3
 	)
 
-	# 4. Pie chart
-	fig.add_trace(
-		go.Pie(
-			labels=[f'{i}⭐' for i in review_counts.index],
-			values=review_counts.values,
-			marker=dict(colors=colors_bars, line=dict(color=COLORS['background'], width=2)),
-			textinfo='label+percent',
-			textfont=dict(size=12, color=COLORS['text']),
-			hole=0.4,
-			hovertemplate='<b>%{label}</b><br>%{value:,} reviews<br>%{percent}<extra></extra>',
-			showlegend=False
-		),
-		row=2, col=1
-	)
-
-	# 5. Q-Q Plot para test de normalidad
-	theoretical_quantiles = stats.probplot(sample, dist="norm")[0][0]
-	sample_quantiles = stats.probplot(sample, dist="norm")[0][1]
-
-	fig.add_trace(
-		go.Scatter(
-			x=theoretical_quantiles,
-			y=sample_quantiles,
-			mode='markers',
-			marker=dict(size=4, color=COLORS['info'], opacity=0.6),
-			hovertemplate='Teórico: %{x:.2f}<br>Observado: %{y:.2f}<extra></extra>',
-			showlegend=False
-		),
-		row=2, col=2
-	)
-
-	# Línea de referencia para normalidad
-	fig.add_trace(
-		go.Scatter(
-			x=[theoretical_quantiles.min(), theoretical_quantiles.max()],
-			y=[theoretical_quantiles.min(), theoretical_quantiles.max()],
-			mode='lines',
-			line=dict(color=COLORS['danger'], dash='dash', width=2),
-			showlegend=False
-		),
-		row=2, col=2
-	)
+	# # 4. Pie chart
+	# fig.add_trace(
+	# 	go.Pie(
+	# 		labels=[f'{i}⭐' for i in review_counts.index],
+	# 		values=review_counts.values,
+	# 		marker=dict(colors=colors_bars, line=dict(color=COLORS['background'], width=2)),
+	# 		textinfo='label+percent',
+	# 		textfont=dict(size=12, color=COLORS['text']),
+	# 		hole=0.4,
+	# 		hovertemplate='<b>%{label}</b><br>%{value:,} reviews<br>%{percent}<extra></extra>',
+	# 		showlegend=False
+	# 	),
+	# 	row=2, col=1
+	# )
+	#
+	# # 5. Q-Q Plot para test de normalidad
+	# theoretical_quantiles = stats.probplot(sample, dist="norm")[0][0]
+	# sample_quantiles = stats.probplot(sample, dist="norm")[0][1]
+	#
+	# fig.add_trace(
+	# 	go.Scatter(
+	# 		x=theoretical_quantiles,
+	# 		y=sample_quantiles,
+	# 		mode='markers',
+	# 		marker=dict(size=4, color=COLORS['info'], opacity=0.6),
+	# 		hovertemplate='Teórico: %{x:.2f}<br>Observado: %{y:.2f}<extra></extra>',
+	# 		showlegend=False
+	# 	),
+	# 	row=2, col=2
+	# )
+	#
+	# # Línea de referencia para normalidad
+	# fig.add_trace(
+	# 	go.Scatter(
+	# 		x=[theoretical_quantiles.min(), theoretical_quantiles.max()],
+	# 		y=[theoretical_quantiles.min(), theoretical_quantiles.max()],
+	# 		mode='lines',
+	# 		line=dict(color=COLORS['danger'], dash='dash', width=2),
+	# 		showlegend=False
+	# 	),
+	# 	row=2, col=2
+	# )
 
 	# 6. Violin plot
-	fig.add_trace(
-		go.Violin(
-			y=df['review_score'],
-			marker=dict(color=COLORS['secondary']),
-			box_visible=True,
-			meanline_visible=True,
-			name='',
-			hovertemplate='Valor: %{y}<extra></extra>',
-			showlegend=False
-		),
-		row=2, col=3
-	)
+	# fig.add_trace(
+	# 	go.Violin(
+	# 		y=df['review_score'],
+	# 		marker=dict(color=COLORS['secondary']),
+	# 		box_visible=True,
+	# 		meanline_visible=True,
+	# 		name='',
+	# 		hovertemplate='Valor: %{y}<extra></extra>',
+	# 		showlegend=False
+	# 	),
+	# 	row=2, col=3
+	# )
 
 	# Actualizar layout
 	fig.update_layout(
@@ -473,7 +473,7 @@ def create_review_score_section(df):
 	fig, stats_dict, shapiro_stat, shapiro_p, counts, pcts = create_review_score_analysis(df)
 
 	return html.Div([
-		create_section_header('⭐ PASO 2: Análisis de la Variable Target (Review Score)', color=COLORS['warning']),
+		create_section_header('⭐ Análisis de la Variable Target (Review Score)', color=COLORS['warning']),
 
 		create_info_banner(
 			'Análisis descriptivo e inferencial de la satisfacción del cliente medida por review_score',
@@ -489,12 +489,12 @@ def create_review_score_section(df):
 					html.Strong('"Caracterizar el comportamiento de compra y patrones de satisfacción"',
 											style={'color': COLORS['text'], 'fontSize': '16px'}),
 				], style={'marginBottom': '10px', 'color': COLORS['text']}),
-				html.P([
-					'Este análisis responde: ',
-					html.Strong('¿Cómo se distribuye la satisfacción del cliente? ', style={'color': COLORS['primary']}),
-					'¿Es simétrica o sesgada? ¿Sigue una distribución normal? ',
-					'Utilizamos estadística descriptiva y pruebas de normalidad.'
-				], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text'], 'marginBottom': 0})
+				# html.P([
+				# 	'Este análisis responde: ',
+				# 	html.Strong('¿Cómo se distribuye la satisfacción del cliente? ', style={'color': COLORS['primary']}),
+				# 	'¿Es simétrica o sesgada? ¿Sigue una distribución normal? ',
+				# 	'Utilizamos estadística descriptiva y pruebas de normalidad.'
+				# ], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text'], 'marginBottom': 0})
 			])
 		], style={'background': COLORS['card'], 'border': f'2px solid {COLORS["success"]}', 'marginBottom': '30px'}),
 
@@ -599,7 +599,7 @@ def create_review_score_section(df):
 		# Interpretación estadística completa
 		dbc.Card([
 			dbc.CardHeader(
-				html.H5('📊 Interpretación Estadística Profesional', style={'margin': 0, 'color': COLORS['primary']})),
+				html.H5('📊 Interpretación', style={'margin': 0, 'color': COLORS['primary']})),
 			dbc.CardBody([
 
 				# Medidas de tendencia central
@@ -707,9 +707,9 @@ def create_review_score_section(df):
 						' La distribución de review_score ',
 						html.Strong('NO sigue una distribución normal', style={'color': COLORS['danger']}) if shapiro_p < 0.05
 						else html.Strong('sigue aproximadamente una distribución normal', style={'color': COLORS['success']}),
-						'. El Q-Q plot muestra desviaciones en las colas, confirmando asimetría. ',
-						html.Strong('Implicación metodológica:', style={'color': COLORS['warning']}),
-						' Se deben usar pruebas no paramétricas (Mann-Whitney U, Kruskal-Wallis) para comparaciones entre grupos.'
+						# '. El Q-Q plot muestra desviaciones en las colas, confirmando asimetría. ',
+						# html.Strong('Implicación metodológica:', style={'color': COLORS['warning']}),
+						# ' Se deben usar pruebas no paramétricas (Mann-Whitney U, Kruskal-Wallis) para comparaciones entre grupos.'
 					], style={'fontSize': '14px', 'lineHeight': '1.8', 'color': COLORS['text']})
 				], style={'marginBottom': '25px'}),
 
@@ -717,7 +717,7 @@ def create_review_score_section(df):
 
 				# Conclusión integrada
 				html.Div([
-					html.H6('🎯 Conclusión Integrada con Objetivos del Proyecto',
+					html.H6('🎯 Conclusión',
 									style={'color': COLORS['primary'], 'marginBottom': '15px'}),
 					html.P([
 						html.Strong('Respuesta al Objetivo Descriptivo:', style={'color': COLORS['success']}),
@@ -963,7 +963,7 @@ def create_delivery_section(df):
 	fig, stats_by_sat, u_stat, p_mann, h_stat, p_kruskal, on_time_rate, on_time_pct = create_delivery_analysis(df)
 
 	return html.Div([
-		create_section_header('🚚 PASO 3: Análisis de Variables Operacionales (Entrega)', color=COLORS['success']),
+		create_section_header('🚚 Análisis de Variables Operacionales (Entrega)', color=COLORS['success']),
 
 		create_info_banner(
 			'Análisis de factores operacionales críticos: tiempos de entrega, retrasos y cumplimiento',
@@ -985,6 +985,7 @@ def create_delivery_section(df):
 					html.Strong('¿Los tiempos de entrega y retrasos afectan significativamente la satisfacción? ',
 											style={'color': COLORS['primary']}),
 					'Utilizamos pruebas no paramétricas (Mann-Whitney U, Kruskal-Wallis) debido a la no normalidad de los datos.'
+					'El Mann-Whitney U compara dos grupos independientes usando rangos en vez de medias y funciona sin asumir normalidad. Su estadístico U se calcula a partir de las sumas de rangos y tamaños de muestra.',
 				], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text'], 'marginBottom': 0})
 			])
 		], style={'background': COLORS['card'], 'border': f'2px solid {COLORS["info"]}', 'marginBottom': '30px'}),
@@ -1090,7 +1091,7 @@ def create_delivery_section(df):
 					], style={'fontSize': '14px', 'lineHeight': '1.8', 'marginBottom': '10px', 'color': COLORS['text']}),
 
 					html.P([
-						html.Strong('Interpretación:', style={'color': COLORS['text']}),
+						html.Strong('->:', style={'color': COLORS['text']}),
 						' Existe evidencia estadísticamente significativa (p < 0.001) de que ',
 						html.Strong('las entregas a tiempo tienen review_score significativamente mayor ',
 												style={'color': COLORS['success']}),
@@ -1106,6 +1107,7 @@ def create_delivery_section(df):
 				html.Div([
 					html.H6('2️⃣ Test Kruskal-Wallis: Delivery Time por Satisfaction Level',
 									style={'color': COLORS['warning'], 'marginBottom': '15px'}),
+					'El Kruskal-Wallis compara 3 o más grupos independientes usando rangos y sin asumir normalidad. El estadístico H se basa en la suma de rangos de cada grupo y se contrasta con una χ².',
 					html.P([
 						html.Strong('Hipótesis:', style={'color': COLORS['text']}),
 						html.Br(),
@@ -1405,7 +1407,7 @@ def create_product_section(df):
 	worst_score = sat_by_cat['mean'].min()
 
 	return html.Div([
-		create_section_header('📦 PASO 4: Análisis de Variables de Producto', color=COLORS['info']),
+		create_section_header('📦 Análisis de Variables de Producto', color=COLORS['info']),
 
 		create_info_banner(
 			'Análisis de características del producto: categoría, presentación visual y dimensiones físicas',
@@ -1422,13 +1424,13 @@ def create_product_section(df):
 					html.Strong('"Identificar cómo las características de producto afectan la satisfacción"',
 											style={'color': COLORS['text'], 'fontSize': '16px'}),
 				], style={'marginBottom': '10px', 'color': COLORS['text']}),
-				html.P([
-					'Este análisis responde: ',
-					html.Strong('¿Las categorías de producto tienen diferentes niveles de satisfacción? ',
-											style={'color': COLORS['primary']}),
-					html.Strong('¿Más fotos mejoran la experiencia? ', style={'color': COLORS['success']}),
-					'Utilizamos ANOVA y Chi-cuadrado para validar diferencias entre grupos.'
-				], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text'], 'marginBottom': 0})
+				# html.P([
+				# 	'Este análisis responde: ',
+				# 	html.Strong('¿Las categorías de producto tienen diferentes niveles de satisfacción? ',
+				# 							style={'color': COLORS['primary']}),
+				# 	html.Strong('¿Más fotos mejoran la experiencia? ', style={'color': COLORS['success']}),
+				# 	'Utilizamos ANOVA y Chi-cuadrado para validar diferencias entre grupos.'
+				# ], style={'fontSize': '15px', 'lineHeight': '1.8', 'color': COLORS['text'], 'marginBottom': 0})
 			])
 		], style={'background': COLORS['card'], 'border': f'2px solid {COLORS["warning"]}', 'marginBottom': '30px'}),
 
@@ -1909,7 +1911,7 @@ def create_geographic_section(df):
 	total_states = df['customer_state'].nunique()
 
 	return html.Div([
-		create_section_header('🌍 PASO 5: Análisis Geográfico y Distribución Espacial', color=COLORS['danger']),
+		create_section_header('🌍 Análisis Geográfico y Distribución Espacial', color=COLORS['danger']),
 
 		create_info_banner(
 			'Análisis de factores geográficos: distribución de clientes, concentración de sellers y variaciones regionales',
@@ -2272,7 +2274,7 @@ def create_geographic_section(df):
 
 		# Resumen ejecutivo final de todo el análisis
 		dbc.Card([
-			dbc.CardHeader(html.H4('📋 RESUMEN EJECUTIVO: ANÁLISIS ESTADÍSTICO COMPLETO',
+			dbc.CardHeader(html.H4('📋 RESUMEN',
 														 style={'margin': 0, 'color': COLORS['primary'], 'textAlign': 'center'})),
 			dbc.CardBody([
 				html.P([
@@ -2329,7 +2331,7 @@ def create_geographic_section(df):
 				html.Hr(style={'margin': '25px 0', 'borderColor': COLORS['primary'], 'borderWidth': '2px'}),
 
 				html.P([
-					html.Strong('🎯 CONCLUSIÓN FINAL: ', style={'fontSize': '18px', 'color': COLORS['primary']}),
+					html.Strong('🎯 CONCLUSIÓN: ', style={'fontSize': '18px', 'color': COLORS['primary']}),
 					html.Br(),
 					'El factor ',
 					html.Strong('MÁS CRÍTICO ', style={'color': COLORS['danger'], 'fontSize': '16px'}),
@@ -2393,9 +2395,9 @@ def create_analisis_content(df):
 				html.H5('🎯 Marco Analítico', style={'margin': 0, 'color': COLORS['info']})),
 			dbc.CardBody([
 				html.P([
-					'Este análisis responde directamente a los ',
-					html.Strong('objetivos descriptivo, exploratorio e inferencial ',
-								style={'color': COLORS['primary']}),
+					# 'Este análisis responde directamente a los ',
+					# html.Strong('objetivos descriptivo, exploratorio e inferencial ',
+					# 			style={'color': COLORS['primary']}),
 					'del proyecto. Utilizamos métodos estadísticos rigurosos para: ',
 					html.Br(),
 					html.Strong('(1) Caracterizar patrones de satisfacción, ', style={'color': COLORS['success']}),
